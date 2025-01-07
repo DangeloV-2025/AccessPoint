@@ -1,0 +1,4 @@
+title: Talk About Yourself
+author: Seth Robles
+date: January 4, 2025
+slug: talk-about-yourself
