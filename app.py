@@ -41,6 +41,15 @@ def load_blog_post(slug):
     metadata["content"] = content
     return metadata
 
+# Function to load scholarships from CSV
+def load_scholarships():
+    scholarships = []
+    with open('resource_content/Scholarships_PlaceHolder - Sheet2.csv', newline='', encoding='utf-8') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            scholarships.append(row)
+    return scholarships
+
 
 # Scholarship model
 class Scholarship(db.Model):
@@ -109,17 +118,22 @@ def about():
 def contact():
     return render_template("contact.html")
 
-
-@app.route("/scholarships")
+@app.route("/resources/scholarships")
 def scholarships():
-    return render_template("scholarships.html")
+    scholarships = load_scholarships()  # Load data from CSV
+    return render_template("resources/scholarships.html", scholarships=scholarships)
+
+@app.route("/resources/<page>")
+def resources(page):
+    if page == "scholarships":
+        abort(404)  # Prevent conflict
+    try:
+        return render_template(f"resources/{page}.html")
+    except:
+        abort(404)
 
 
-#TODO: Fix scholarships population and then repeat process for the other 2
-# @app.route('/resources/scholarships')
-# def scholarships():
-#     scholarships = Scholarship.query.all()
-#     return render_template('resources/scholarships.html', scholarships=scholarships)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
