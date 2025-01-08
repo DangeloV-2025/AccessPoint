@@ -105,12 +105,21 @@ def assets(filename):
 def about():
     return render_template("about.html")
 
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
 
 
-@app.route('/resources/scholarships')
+@app.route("/scholarships")
 def scholarships():
-    scholarships = Scholarship.query.all()
-    return render_template('resources/scholarships.html', scholarships=scholarships)
+    return render_template("scholarships.html")
+
+
+#TODO: Fix scholarships population and then repeat process for the other 2
+# @app.route('/resources/scholarships')
+# def scholarships():
+#     scholarships = Scholarship.query.all()
+#     return render_template('resources/scholarships.html', scholarships=scholarships)
 
 if __name__ == '__main__':
     app.run(debug=True)
