@@ -12,6 +12,10 @@
     body {
       font-family: 'Nunito', sans-serif;
       background-color: #e6f7ff;
+      display: flex; /* Enable Flexbox for the body */
+      flex-direction: column; /* Stack content vertically */
+      min-height: 100vh; /* Ensure the body takes up the full height of the viewport */
+      margin: 0; /* Remove default margin */
     }
 
     .about-header {
@@ -43,6 +47,7 @@
       background: white;
       border-radius: 15px;
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+      flex: 1; /* Allow the main content to take up the remaining space */
     }
 
     .about-content img {
@@ -72,7 +77,9 @@
       background-color: #2f80ed;
       color: white;
       border-radius: 50px 50px 0 0;
+      margin-top: auto; /* Push the footer to the bottom */
     }
+
   </style>
 </head>
 <body>
@@ -121,8 +128,6 @@
   <!-- About Content -->
   <div class="container">
     <div class="about-content">
-      <!-- Bear Mascot -->
-      <img src="/assets/img/bigBear.png" alt="Bear Mascot" />
       <!-- About Text -->
       <div class="about-text">
         <h2>Our Mission</h2>
@@ -133,7 +138,10 @@
           Our mission is to simplify the process of navigating higher education by providing tailored resources for each student’s unique journey.
         </p>
       </div>
+      <!-- Bear Mascot -->
+      <img src="/assets/img/bigBear.png" alt="Bear Mascot" class="bear-flipped" />
     </div>
+    
   </div>
 
   <!-- Footer -->

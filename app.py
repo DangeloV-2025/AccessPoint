@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import csv
 import os
 
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///scholarships.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -60,6 +61,7 @@ class Scholarship(db.Model):
     description = db.Column(db.Text, nullable=False)
     apply_link = db.Column(db.String(500), nullable=False)
 
+#TODO: Make this method open for all of them
 # Populate the database from a CSV file
 def populate_from_csv():
     if Scholarship.query.count() == 0:  # Avoid duplicates
@@ -122,6 +124,12 @@ def contact():
 def scholarships():
     scholarships = load_scholarships()  # Load data from CSV
     return render_template("resources/scholarships.html", scholarships=scholarships)
+
+@app.route("/resources/pre-college-programs")
+def Pre_college():
+    scholarships = load_scholarships()  # Load data from CSV
+    return render_template("resources/precolelege.html", scholarships=scholarships)
+
 
 @app.route("/resources/<page>")
 def resources(page):
