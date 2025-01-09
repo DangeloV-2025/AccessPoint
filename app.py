@@ -1,13 +1,27 @@
-from flask import Flask, render_template, send_from_directory, abort
+from flask import (Flask, render_template, 
+                   request, redirect, 
+                   session, url_for, 
+                   flash, send_from_directory,
+                   abort
+)
 from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv
+from supabase import create_client, Client
+
 import csv
 import os
 
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///scholarships.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+app.secret_key = os.getenv("SECRET_KEY")
+
+# Supabase configuration
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
 
 # Path to the blog_posts directory
 BLOG_POSTS_DIR = "blog_posts"
@@ -52,14 +66,14 @@ def load_scholarships():
     return scholarships
 
 
-# Scholarship model
-class Scholarship(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), nullable=False)
-    amount = db.Column(db.String(100), nullable=False)
-    deadline = db.Column(db.String(50), nullable=False)
-    description = db.Column(db.Text, nullable=False)
-    apply_link = db.Column(db.String(500), nullable=False)
+# # Scholarship model
+# class Scholarship(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(200), nullable=False)
+#     amount = db.Column(db.String(100), nullable=False)
+#     deadline = db.Column(db.String(50), nullable=False)
+#     description = db.Column(db.Text, nullable=False)
+#     apply_link = db.Column(db.String(500), nullable=False)
 
 #TODO: Make this method open for all of them
 # Populate the database from a CSV file
@@ -96,6 +110,67 @@ def home():
         if post:
             posts.append(post)
     return render_template("index.html", posts=posts)
+
+## SUPABASE LOGIN ATTEMPTS
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        email = request.form.get("email")
+        password = request.form.get("password")
+        try:
+            # Supabase user sign-up
+            response = supabase.auth.sign_up({"email": email, "password": password})
+            flash("Registration successful! Please log in.", "success")
+            return redirect(url_for("login"))
+        except Exception as e:
+            flash(f"Error during registration: {e}", "danger")
+    return render_template("register.html")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        email = request.form.get("email")
+        password = request.form.get("password")
+        
+        try:
+            # Attempt to log in
+            response = supabase.auth.sign_in_with_password({"email": email, "password": password})
+            
+            # If successful, redirect to dashboard
+            if response.get("user"):
+                session["user"] = response["user"]
+                flash("Login successful!", "success")
+                return redirect(url_for("dashboard"))
+        except Exception as e:
+            # Handle specific error messages
+            error_message = str(e)
+            if "Invalid login credentials" in error_message:
+                flash("Incorrect email or password. Please try again.", "danger")
+            else:
+                flash("An unexpected error occurred. Please try again later.", "danger")
+            print(f"Error during login: {e}")  # Debugging: Print the error
+
+    return render_template("login.html")
+
+
+@app.route("/logout")
+def logout():
+    session.pop("user", None)
+    flash("Logged out successfully.", "success")
+    return redirect(url_for("login"))
+
+
+
+@app.route("/dashboard")
+def dashboard():
+    if "user" not in session:
+        flash("Please log in to access the dashboard.", "warning")
+        return redirect(url_for("login"))
+    return render_template("dashboard.html", user=session["user"])
+
+
 
 
 @app.route("/blog/<slug>")
