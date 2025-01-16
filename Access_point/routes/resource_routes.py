@@ -31,9 +31,36 @@ def scholarships():
         abort(404)
 
     
+@resource_bp.route("/resources/fly_ins")
+def fly_ins():
+    print("Route was hit!")  # Debugging
+    """Fetch and display fly-ins from Supabase."""
+    try:
+        # Fetch data from Supabase
+        response = supabase.table("fly_ins").select("*").execute()
+        fly_ins = response.data  # Contains the fetched rows
 
+        # Debugging: Print the fetched data for inspection
+        print(f"Fetched fly_ins data: {fly_ins}")
 
-    
+        # Default to an empty list if no data is found
+        if not fly_ins:
+            fly_ins = []
+    except Exception as e:
+        print(f"Error fetching fly_ins: {e}")
+        fly_ins = []
+
+    # Render the template with the fetched fly_ins data
+    try:
+        return render_template("resources/fly_ins.html", fly_ins=fly_ins)
+    except Exception as e:
+        print(f"Error rendering template: {e}")
+        abort(404)
+
+# @resource_bp.route("/resources/fly-ins")
+# def fly_ins():
+#     print("Route was hit!")  # Debugging
+#     return "Debugging Route: Fly-Ins"
 
 def load_scholarships():
     scholarships = []

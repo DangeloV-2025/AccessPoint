@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import os
 
-db = SQLAlchemy()  # We define db here, but we only init_app inside create_app
+db = SQLAlchemy()  # We define db here, bfut we only init_app inside create_app
 
 def create_app():
     """Application factory: creates and configures the Flask app."""
@@ -16,7 +16,7 @@ def create_app():
     app.config.from_object('Access_point.config.Config')
 
     # Initialize Flask extensions
-    db.init_app(app)
+    db.init_app(app) 
 
     # Register Blueprints
     from Access_point.routes.main_routes import main_bp
@@ -24,16 +24,16 @@ def create_app():
     from Access_point.routes.resource_routes import resource_bp
     from Access_point.routes.dashboard_route import dashboard_bp
 
-    print("Registering Blueprint: main_bp")
+    #print("Registering Blueprint: main_bp")
     app.register_blueprint(main_bp)
 
-    print("Registering Blueprint: auth_bp")
-    app.register_blueprint(auth_bp, url_prefix="/auth")
+    #print("Registering Blueprint: auth_bp")
+    app.register_blueprint(auth_bp)
 
-    print("Registering Blueprint: resource_bp")
+    #print("Registering Blueprint: resource_bp")
     app.register_blueprint(resource_bp)
 
-    print("Registering Blueprint: dashboard_bp")
+    #print("Registering Blueprint: dashboard_bp")
     app.register_blueprint(dashboard_bp, url_prefix="/dashboard")
 
     # If you want to do any "create_all" or DB seeding on first startup,
