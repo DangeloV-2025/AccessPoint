@@ -28,10 +28,6 @@
       background-color: white;
     }
 
-    .login-button {
-      margin-left: auto; /* Pushes the button to the far right */
-    }
-
     .todo-item {
       display: flex;
       justify-content: space-between;
@@ -50,33 +46,19 @@
 </head>
 <body>
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-      <a class="navbar-brand" href="index.html">AccessPoint</a>
-      <!-- Beta box -->
-      <div class="beta-box">Beta</div>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <a class="navbar-brand" href="#">AccessPoint</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="resourcesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Resources
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="resourcesDropdown">
-              <li><a class="dropdown-item" href="/resources/scholarships">Scholarships</a></li>
-              <li><a class="dropdown-item" href="/resources/pre-college-programs">Pre-College Programs</a></li>
-              <li><a class="dropdown-item" href="/resources/fly_ins">Fly-Ins</a></li>
-            </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
           </li>
-          <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
         </ul>
-        <a href="/auth/login" class="btn btn-primary btn-sm login-button">Login</a>
-
       </div>
-      
     </div>
   </nav>
 
@@ -100,33 +82,77 @@
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // To-Do List Logic
-    const todoForm = document.getElementById('todoForm');
-    const todoInput = document.getElementById('todoInput');
-    const todoList = document.getElementById('todoList');
+    const todoForm = document.getElementById("todoForm");
+    const todoInput = document.getElementById("todoInput");
+    const todoList = document.getElementById("todoList");
 
-    // Handle form submission
-    todoForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const task = todoInput.value.trim();
-      if (task) {
-        addTodoItem(task);
-        todoInput.value = '';
+    // Fetch To-Dos from the server on page load
+    document.addEventListener("DOMContentLoaded", async () => {
+      try {
+        const response = await fetch("/auth/todos");
+        const data = await response.json();
+
+        if (data.todos) {
+          data.todos.forEach((todo) => {
+            addTodoItem(todo.task, todo.id, todo.completed);
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching To-Dos:", error);
       }
     });
 
     // Add a new To-Do item
-    function addTodoItem(task) {
-      const li = document.createElement('li');
-      li.classList.add('todo-item');
+    todoForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const task = todoInput.value.trim();
+
+      if (task) {
+        try {
+          const response = await fetch("/auth/todos", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ task }),
+          });
+
+          const data = await response.json();
+          if (data.message) {
+            addTodoItem(task); // Add the task to the UI
+            todoInput.value = "";
+          }
+        } catch (error) {
+          console.error("Error adding task:", error);
+        }
+      }
+    });
+
+    // Add a To-Do item to the UI
+    function addTodoItem(task, id, completed = false) {
+      const li = document.createElement("li");
+      li.classList.add("todo-item");
       li.innerHTML = `
         <span>${task}</span>
-        <button class="btn btn-danger btn-sm btn-remove">Remove</button>
+        <button class="btn btn-danger btn-sm btn-remove" data-id="${id}">Remove</button>
       `;
 
       // Add event listener to remove button
-      li.querySelector('.btn-remove').addEventListener('click', () => {
-        li.remove();
+      li.querySelector(".btn-remove").addEventListener("click", async (e) => {
+        const todoId = e.target.dataset.id;
+
+        try {
+          const response = await fetch(`/auth/todos/${todoId}`, {
+            method: "DELETE",
+          });
+
+          const data = await response.json();
+          if (data.message) {
+            li.remove();
+          }
+        } catch (error) {
+          console.error("Error deleting task:", error);
+        }
       });
 
       todoList.appendChild(li);

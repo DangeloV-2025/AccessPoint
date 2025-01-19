@@ -33,14 +33,20 @@ def scholarships():
     
 @resource_bp.route("/resources/fly_ins")
 def fly_ins():
-    print("Route was hit!")  # Debugging
     """Fetch and display fly-ins from Supabase."""
+    print("Route was hit!")  # Debugging
+    
     try:
         # Fetch data from Supabase
         response = supabase.table("fly_ins").select("*").execute()
-        fly_ins = response.data  # Contains the fetched rows
+        fly_ins = response.data
+        print(fly_ins)
 
-        # Debugging: Print the fetched data for inspection
+    
+        # Extract the fetched rows
+        fly_ins = response.data
+
+        # Debugging: Log the fetched data
         print(f"Fetched fly_ins data: {fly_ins}")
 
         # Default to an empty list if no data is found
@@ -57,10 +63,14 @@ def fly_ins():
         print(f"Error rendering template: {e}")
         abort(404)
 
-# @resource_bp.route("/resources/fly-ins")
-# def fly_ins():
-#     print("Route was hit!")  # Debugging
-#     return "Debugging Route: Fly-Ins"
+
+    # Render the template with the fetched fly_ins data
+    try:
+        return render_template("resources/fly_ins.html", fly_ins=fly_ins)
+    except Exception as e:
+        print(f"Error rendering template: {e}")
+        abort(404)
+
 
 def load_scholarships():
     scholarships = []
@@ -72,10 +82,35 @@ def load_scholarships():
 
 
 
-@resource_bp.route("/resources/pre-college-programs")
+@resource_bp.route("/resources/pre_college")
 def pre_college():
-    data = load_scholarships()  # Example usage, or different loader function
-    return render_template("resources/precolelege.html", scholarships=data)
+    """Fetch and display pre_college from Supabase."""
+    print("Route was hit!")  # Debugging
+    
+    try:
+        # Fetch data from Supabase
+        response = supabase.table("pre_college").select("*").execute()
+        pre_college = response.data
+        print(pre_college)
+
+        # Debugging: Log the fetched data
+        print(f"Fetched pre college data: {pre_college}")
+
+        # Default to an empty list if no data is found
+        if not pre_college:
+            pre_college = []
+    except Exception as e:
+        print(f"Error fetching pre-college: {e}")
+        pre_college = []
+
+    # Render the template with the fetched fly_ins data
+    try:
+        return render_template("resources/pre_college.html", pre_college=pre_college)
+    except Exception as e:
+        print(f"Error rendering template: {e}")
+        abort(404)
+
+
 
 @resource_bp.route("/resources/<page>")
 def resources(page):

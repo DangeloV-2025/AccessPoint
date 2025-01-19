@@ -74,6 +74,100 @@ def logout():
     flash("You have been logged out.", "info")
     return redirect(url_for("auth.logout"))
 
+# ___________              ________           .____    .__          __   
+# \__    ___/___           \______ \   ____   |    |   |__| _______/  |_ 
+#   |    | /  _ \   ______  |    |  \ /  _ \  |    |   |  |/  ___/\   __\
+#   |    |(  <_> ) /_____/  |    `   (  <_> ) |    |___|  |\___ \  |  |  
+#   |____| \____/          /_______  /\____/  |_______ \__/____  > |__|  
+#                                  \/                 \/       \/        
+
+@auth_bp.route("/todos", methods=["GET"])
+def get_todos():
+    """Fetch all To-Dos for the logged-in user."""
+    if "user" not in session:
+        flash("You need to log in first.", "warning")
+        return redirect(url_for("auth.login"))
+
+    try:
+        user_id = session["user"]["id"]
+        response = supabase.table("todos").select("*").eq("user_id", user_id).execute()
+        todos = response.data  # Fetch To-Dos for the logged-in user
+        return {"todos": todos}, 200
+    except Exception as e:
+        print(f"Error fetching To-Dos: {e}")
+        return {"error": "Failed to fetch To-Dos"}, 500
+    
+@auth_bp.route("/todos", methods=["POST"])
+def add_todo():
+    """Add a new To-Do for the logged-in user."""
+    if "user" not in session:
+        return {"error": "Unauthorized"}, 401
+
+    try:
+        user_id = session["user"]["id"]
+        task = request.json.get("task")  # Task content from the request body
+
+        # Insert the new task into the database
+        response = supabase.table("todos").insert(
+            {"user_id": user_id, "task": task, "completed": False}
+        ).execute()
+
+        print(f"Supabase response: {response}")
+
+        return {"message": "Task added successfully!"}, 201
+    except Exception as e:
+        print(f"Error adding To-Do: {e}")
+        return {"error": "Failed to add task"}, 500
+    
+@auth_bp.route("/todos/<int:todo_id>", methods=["DELETE"])
+def delete_todo(todo_id):
+    """Delete a specific To-Do."""
+    if "user" not in session:
+        return {"error": "Unauthorized"}, 401
+
+    try:
+        user_id = session["user"]["id"]
+
+        # Delete the task from the database
+        response = supabase.table("todos").delete().match(
+            {"id": todo_id, "user_id": user_id}
+        ).execute()
+
+        if response.error:
+            return {"error": "Failed to delete task"}, 500
+
+        return {"message": "Task deleted successfully!"}, 200
+    except Exception as e:
+        print(f"Error deleting To-Do: {e}")
+        return {"error": "Failed to delete task"}, 500
+
+
+@auth_bp.route("/todos/<int:todo_id>", methods=["PUT"])
+def update_todo(todo_id):
+    """Update a specific To-Do."""
+    if "user" not in session:
+        return {"error": "Unauthorized"}, 401
+
+    try:
+        user_id = session["user"]["id"]
+        completed = request.json.get("completed")  # Boolean from the request body
+
+        # Update the task in the database
+        response = supabase.table("todos").update(
+            {"completed": completed}
+        ).match({"id": todo_id, "user_id": user_id}).execute()
+
+        if response.error:
+            return {"error": "Failed to update task"}, 500
+
+        return {"message": "Task updated successfully!"}, 200
+    except Exception as e:
+        print(f"Error updating To-Do: {e}")
+        return {"error": "Failed to update task"}, 500
+
+
+
+
 #       ________                     .__          
 #  /  _____/  ____   ____   ____ |  |   ____  
 # /   \  ___ /  _ \ /  _ \ / ___\|  | _/ __ \ 

@@ -19,3 +19,5 @@ def dashboard():
     user = response.data[0] if response.data else {}
 
     return render_template("auth/dashboard.html", user=user)
+
+

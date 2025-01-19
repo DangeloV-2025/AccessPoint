@@ -3,40 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><Pre-college></Pre-College> - AccessPoint</title>
+  <title>Pre-College Programs - AccessPoint</title>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
       font-family: 'Nunito', sans-serif;
-      background-color: #e6f7ff;
+      background-color: #f7e6ff;
       margin: 0;
       padding: 0;
       position: relative;
     }
 
-    /* Dark Blue Section */
-    .dark-blue-section {
-      background-color: #2f80ed;
+    /* Dark Purple Section */
+    .dark-purple-section {
+      background-color: #6a0dad;
       color: white;
       text-align: center;
       padding: 4rem 1rem;
     }
 
-    .dark-blue-section h1 {
-      font-size: 3rem; /* Increased font size */
+    .dark-purple-section h1 {
+      font-size: 3rem;
       font-weight: bold;
       margin-bottom: 1rem;
     }
 
-    .dark-blue-section p {
-      font-size: 1.5rem; /* Increased font size */
+    .dark-purple-section p {
+      font-size: 1.5rem;
       line-height: 1.8;
     }
 
-    /* Scholarship Boxes */
-    .scholarship-box {
-      background: #56ccf2;
+    /* Pre-College Program Boxes */
+    .pre_college-box {
+      background: #b19cd9;
       color: white;
       border-radius: 10px;
       padding: 2rem;
@@ -45,49 +45,24 @@
       transition: transform 0.2s, box-shadow 0.2s;
     }
 
-    .scholarship-box:hover {
+    .pre_college-box:hover {
       transform: translateY(-5px);
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     }
 
-    .scholarship-box h3 {
+    .pre_college-box h3 {
       font-size: 2rem;
       margin-bottom: 1rem;
     }
 
-    .scholarship-box p {
+    .pre_college-box p {
       font-size: 1.2rem;
       margin: 0.5rem 0;
     }
 
-    /* Bear Section */
-    .bear-container {
-      position: relative;
-      text-align: right; /* Align to the right */
-      margin-top: 6rem; /* Add more margin to push it down */
-      margin-right: 2rem; /* Add space from the right edge */
+    .modal-dialog {
+      max-width: 80%;
     }
-
-    .bear-shadow {
-      background: rgba(0, 0, 255, 0.2);
-      border-radius: 50%;
-      width: 350px; /* Increase size */
-      height: 120px; /* Increase size */
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      z-index: 1;
-      transform: translate(35px, 80px); /* Adjust X and Y values here */
-    }
-
-    .bear-image {
-      width: 350px; /* Increase size */
-      position: absolute;
-      bottom: -60px; /* Adjust position to overlap shadow */
-      right: -40px; /* Move to the right */
-      z-index: 2;
-    }
-
   </style>
 </head>
 <body>
@@ -101,7 +76,7 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-          
+            <a class="nav-link" href="/">Home</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/about">About</a>
@@ -111,9 +86,9 @@
               Resources
             </a>
             <ul class="dropdown-menu" aria-labelledby="resourcesDropdown">
+              <li><a class="dropdown-item active" href="/resources/pre-college-programs">Pre-College Programs</a></li>
+              <li><a class="dropdown-item" href="/resources/fly_ins">Fly-Ins</a></li>
               <li><a class="dropdown-item" href="/resources/scholarships">Scholarships</a></li>
-              <li><a class="dropdown-item" href="/resources/pre-college-programs">Pre-College Programs</a></li>
-              <li><a class="dropdown-item" href="/resources/fly-ins">Fly-Ins</a></li>
             </ul>
           </li>
           <li class="nav-item">
@@ -124,54 +99,48 @@
     </div>
   </nav>
 
-  <!-- Dark Blue Section -->
-  <div class="dark-blue-section">
-    <h1>Pre-college</h1>
+  <!-- Dark Purple Section -->
+  <div class="dark-purple-section">
+    <h1>Pre-College Programs</h1>
     <p>
-      At AccessPoint, we believe every student deserves a chance to succeed. While many scholarship hubs are available, 
-      these are the ones we've applied for and personally recommend for their accessibility and impact.
+      Explore exciting pre-college programs designed to enhance your skills and prepare you for success.
     </p>
   </div>
 
-  <!-- Scholarship Boxes -->
+  <!-- Pre-College Program Boxes -->
   <div class="container mt-5">
-    <div class="row g-4">
-      {% for scholarship in scholarships %}
+    <div class="row g-4" id="preCollegeContainer">
+      {% for program in pre_college_programs %}
       <div class="col-md-6 col-lg-4">
-        <div class="scholarship-box" data-bs-toggle="modal" data-bs-target="#scholarshipModal{{ loop.index }}" tabindex="0">
-          <h3>{{ scholarship.name }}</h3>
-          <p><strong>Amount:</strong> {{ scholarship.amount }}</p>
-          <p><strong>Deadline:</strong> {{ scholarship.deadline }}</p>
+        <div class="pre_college-box" data-bs-toggle="modal" data-bs-target="#programModal{{ program.id }}">
+          <h3>{{ program.program_name }}</h3>
+          <p><strong>Host:</strong> {{ program.host_institution }}</p>
+          <p><strong>Deadline:</strong> {{ program.deadline }}</p>
+          <p><strong>Grade Eligibility:</strong> {{ program.grade_eligibility }}</p>
         </div>
       </div>
 
       <!-- Modal -->
-      <div class="modal fade" id="scholarshipModal{{ loop.index }}" tabindex="-1" aria-labelledby="scholarshipModalLabel{{ loop.index }}" aria-hidden="true">
+      <div class="modal fade" id="programModal{{ program.id }}" tabindex="-1" aria-labelledby="programModalLabel{{ program.id }}" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="scholarshipModalLabel{{ loop.index }}">{{ scholarship.name }}</h5>
+              <h5 class="modal-title" id="programModalLabel{{ program.id }}">{{ program.program_name }}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <p>{{ scholarship.description }}</p>
-              <p><strong>Deadline:</strong> {{ scholarship.deadline }}</p>
-              <p><strong>Amount:</strong> {{ scholarship.amount }}</p>
+              <p><strong>Host:</strong> {{ program.host_institution }}</p>
+              <p><strong>Deadline:</strong> {{ program.deadline }}</p>
+              <p><strong>Grade Eligibility:</strong> {{ program.grade_eligibility }}</p>
             </div>
             <div class="modal-footer">
-              <a href="{{ scholarship.apply_link }}" target="_blank" class="btn btn-primary">Apply Now</a>
+              <a href="{{ program.link }}" target="_blank" class="btn btn-primary">Apply Now</a>
             </div>
           </div>
         </div>
       </div>
       {% endfor %}
     </div>
-  </div>
-
-  <!-- Bear Section -->
-  <div class="bear-container">
-    <div class="bear-shadow"></div>
-    <img src="/assets/img/chubby_bear_sitting.png" alt="Bear Mascot" class="bear-image">
   </div>
 
   <!-- Bootstrap JS -->
