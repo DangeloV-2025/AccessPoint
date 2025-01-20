@@ -11,3 +11,5 @@ blog_posts/
 instance/
 resource_content/
 venv
+myenv/
+**/__pycache__/
