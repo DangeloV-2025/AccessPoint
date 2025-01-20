@@ -7,9 +7,9 @@ build/
 instance/
 .env
 crev-project.txt
-blog_posts/
+
 instance/
-resource_content/
+
 venv
 myenv/
 /__pycache__/
