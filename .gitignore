@@ -1,9 +1,9 @@
 node_modules/
 dist/
 build/
-*.log
-*.tmp
-*.swp
+.log
+.tmp
+.swp
 instance/
 .env
 crev-project.txt
@@ -11,3 +11,5 @@ blog_posts/
 instance/
 resource_content/
 venv
+myenv/
+/__pycache__/
