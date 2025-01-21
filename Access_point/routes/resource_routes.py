@@ -2,6 +2,7 @@
 from flask import Blueprint, render_template, abort
 import csv
 from Access_point.supabase_client import supabase
+from datetime import datetime 
 
 
 resource_bp = Blueprint("resource", __name__)
@@ -14,16 +15,32 @@ def scholarships():
         # Fetch data from Supabase
         response = supabase.table("scholarships").select("*").execute()
         scholarships = response.data  # This contains the fetched rows
-
-        # Debugging: Print the response
-        print(f"Response Data: {scholarships}")
+        
+        # Uncomment for debugging
+        # print(f"Fetched scholarships data: {scholarships}") 
 
         # Default to an empty list if no data
-        if scholarships is None:
+        if not scholarships:
             scholarships = []
+        else:
+            current_date = datetime.now().strftime('%Y-%m-%d')
+            for scholarship in scholarships:
+                # Ensure 'deadline' exists and is not None
+                if 'deadline' in scholarship and scholarship['deadline']:
+                    # Check if the deadline has passed
+                    if scholarship['deadline'] < current_date:
+                        scholarship['is_expired'] = True
+                    else:
+                        scholarship['is_expired'] = False
+                else:
+                    # Default for scholarships without a deadline
+                    scholarship['is_expired'] = True
+            scholarships.sort(key=lambda x: x['is_expired'])
     except Exception as e:
         print(f"Error fetching scholarships: {e}")
         scholarships = []
+
+    # Render the template with the fetched scholarships data
     try:
         return render_template("resources/scholarships.html", scholarships=scholarships)
     except:
@@ -35,36 +52,42 @@ def scholarships():
 def fly_ins():
     """Fetch and display fly-ins from Supabase."""
     print("Route was hit!")  # Debugging
-    
+
     try:
         # Fetch data from Supabase
         response = supabase.table("fly_ins").select("*").execute()
         fly_ins = response.data
-        print(fly_ins)
 
-    
-        # Extract the fetched rows
-        fly_ins = response.data
-
-        # Debugging: Log the fetched data
-        print(f"Fetched fly_ins data: {fly_ins}")
+        # Uncomment for debugging
+        # print(f"Fetched fly_ins data: {fly_ins}") 
 
         # Default to an empty list if no data is found
         if not fly_ins:
             fly_ins = []
+        else:
+            # Get the current date
+            current_date = datetime.now().strftime('%Y-%m-%d')
+
+            # Process fly-ins to determine expiration
+            for fly_in in fly_ins:
+                # Ensure 'deadline' exists and is not None
+                if 'deadline' in fly_in and fly_in['deadline']:
+                    # Check if the deadline has passed
+                    if fly_in['deadline'] < current_date:
+                        fly_in['is_expired'] = True
+                    else:
+                        fly_in['is_expired'] = False
+                else:
+                    # Default for fly-ins without a deadline
+                    fly_in['is_expired'] = True
+
+            # Sort fly-ins: Open first, then expired
+            fly_ins.sort(key=lambda x: x['is_expired'])
     except Exception as e:
         print(f"Error fetching fly_ins: {e}")
         fly_ins = []
 
-    # Render the template with the fetched fly_ins data
-    try:
-        return render_template("resources/fly_ins.html", fly_ins=fly_ins)
-    except Exception as e:
-        print(f"Error rendering template: {e}")
-        abort(404)
-
-
-    # Render the template with the fetched fly_ins data
+    # Render the template with the fetched fly-ins data
     try:
         return render_template("resources/fly_ins.html", fly_ins=fly_ins)
     except Exception as e:

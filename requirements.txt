@@ -3,3 +3,4 @@ flask
 python-dotenv
 flask_sqlalchemy
 gunicorn
+# compatible with python version 3.12.5 and 3.11.7

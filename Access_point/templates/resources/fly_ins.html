@@ -25,13 +25,17 @@
 
     .dark-blue-section h1 {
       font-size: 3rem;
-      font-weight: bold;
-      margin-bottom: 1rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 30px;
     }
 
     .dark-blue-section p {
       font-size: 1.5rem;
       line-height: 1.8;
+      text-align: center;
+      margin: 20 auto;
+      max-width: 4000px;
     }
 
     /* Fly-Ins Boxes */
@@ -58,6 +62,10 @@
     .fly_ins-box p {
       font-size: 1.2rem;
       margin: 0.5rem 0;
+    }
+
+    .gray-out {
+      opacity: 0.5;
     }
 
     .modal-dialog {
@@ -101,9 +109,12 @@
 
   <!-- Dark Blue Section -->
   <div class="dark-blue-section">
-    <h1>Fly-Ins</h1>
+    <h1> Fly-Ins </h1>
     <p>
-      Discover amazing fly-in opportunities to explore colleges across the country.
+      Fly-in programs are short campus visits where colleges often cover travel, lodging, and meals. They're geared toward high school students—especially those who are underrepresented, first-generation, or from low-income backgrounds—to help them explore a school’s campus, culture, and academics.
+    </p>
+    <p>
+      During these visits, students stay on campus, attend classes, meet faculty, and connect with current students for an inside look at college life. This experience helps students figure out if the school is a good fit for their goals and preferences, making college decisions easier. Plus, they get to meet peers and mentors who can guide them through the application process.
     </p>
   </div>
 
@@ -112,7 +123,9 @@
     <div class="row g-4">
         {% for fly_in in fly_ins %}
         <div class="col-md-6 col-lg-4">
-            <div class="fly_ins-box" data-bs-toggle="modal" data-bs-target="#flyInsModal{{ loop.index }}">
+            <div class="fly_ins-box {% if fly_in.is_expired %}gray-out{% endif %}"
+                 data-bs-toggle="modal" 
+                 data-bs-target="#flyInsModal{{ loop.index }}">
                 <h3>{{ fly_in.program }}</h3>
                 <p><strong>Host:</strong> {{ fly_in.host_institution }}</p>
                 <p><strong>Deadline:</strong> {{ fly_in.deadline }}</p>

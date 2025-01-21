@@ -24,15 +24,20 @@
     }
 
     .dark-blue-section h1 {
-      font-size: 3rem; /* Increased font size */
-      font-weight: bold;
-      margin-bottom: 1rem;
+      font-size: 3rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 30px;
     }
 
     .dark-blue-section p {
-      font-size: 1.5rem; /* Increased font size */
+      font-size: 1.5rem;
       line-height: 1.8;
+      text-align: center;
+      margin: 20 auto;
+      max-width: 4000px;
     }
+
 
     /* Scholarship Boxes */
     .scholarship-box {
@@ -58,6 +63,10 @@
     .scholarship-box p {
       font-size: 1.2rem;
       margin: 0.5rem 0;
+    }
+
+    .gray-out {
+      opacity: 0.5;
     }
 
     .modal-dialog { max-width: 80%; }
@@ -131,8 +140,10 @@
   <div class="dark-blue-section">
     <h1>Scholarships</h1>
     <p>
-      At AccessPoint, we believe every student deserves a chance to succeed. While many scholarship hubs are available, 
-      these are the ones we've applied for and personally recommend for their accessibility and impact.
+      Scholarships are financial awards that help students pay for college. They can be based on merit—like academics, athletics, or special talents—or tied to financial need or specific criteria, like cultural background, intended major, or community involvement.
+    </p>
+    <p>
+      They make higher education more affordable by cutting down on loans and easing financial stress for students and their families. Some scholarships even go beyond funding, offering extras like mentorship, internships, or access to exclusive programs and networks. Many are designed to support underrepresented groups, helping promote diversity and inclusion in college communities.
     </p>
   </div>
 
@@ -141,7 +152,10 @@
     <div class="row g-4">
       {% for scholarship in scholarships %}
       <div class="col-md-6 col-lg-4">
-        <div class="scholarship-box" data-bs-toggle="modal" data-bs-target="#scholarshipModal{{ loop.index }}" tabindex="0">
+        <div class="scholarship-box {% if scholarship.is_expired %}gray-out{% endif %}" 
+             data-bs-toggle="modal" 
+             data-bs-target="#scholarshipModal{{ loop.index }}" 
+             tabindex="0">
           <h3>{{ scholarship.name }}</h3>
           <p><strong>Amount:</strong> {{ scholarship.amount }}</p>
           <p><strong>Deadline:</strong> {{ scholarship.deadline }}</p>
