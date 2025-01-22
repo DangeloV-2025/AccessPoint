@@ -126,7 +126,7 @@ def pre_college():
         print(f"Error fetching pre-college: {e}")
         pre_college = []
 
-    # Render the template with the fetched fly_ins data
+    # Render the template with the fetched pre_college data
     try:
         return render_template("resources/pre_college.html", pre_college=pre_college)
     except Exception as e:

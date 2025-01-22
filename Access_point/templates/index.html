@@ -24,30 +24,6 @@
       background-color: #e6f7ff;
     }
 
-    /* Adjust the navbar layout */
-    .navbar .container-fluid {
-      display: flex;
-      align-items: center;
-    }
-
-    .beta-box {
-      background-color: #d3d3d3; /* Grey background */
-      padding: 3px 8px; /* Adjust padding to bring Beta closer */
-      border-radius: 5px;
-      font-weight: bold;
-      color: #333;
-      font-size: 1rem;
-      margin-left: 5px; /* Space between AccessPoint and Beta */
-    }
-
-    .navbar .navbar-nav {
-      margin-left: 20px; /* Increased space between Beta and Resources */
-    }
-
-    .login-button {
-      margin-left: auto; /* Pushes the button to the far right */
-    }
-
     .hero-section {
       background: linear-gradient(135deg, #56ccf2, #2f80ed);
       color: white;
@@ -103,37 +79,8 @@
 </head>
 <body>
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="index.html">AccessPoint</a>
-      <!-- Beta box -->
-      <div class="beta-box">Beta</div>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="resourcesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Resources
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="resourcesDropdown">
-              <li><a class="dropdown-item" href="/resources/scholarships">Scholarships</a></li>
-              <li><a class="dropdown-item" href="/resources/pre-college-programs">Pre-College Programs</a></li>
-              <li><a class="dropdown-item" href="/resources/fly_ins">Fly-Ins</a></li>
-            </ul>
-          </li>
-          <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
-        </ul>
-        <a href="/auth/login" class="btn btn-primary btn-sm login-button">Login</a>
-
-      </div>
-      
-    </div>
-  </nav>
+  {% include "navbar.html" %}
   
-
   <!-- Hero Section -->
   <div class="hero-section">
     <img src="assets/img/mascot.png" alt="Website Mascot Display Here" class="mascot">
