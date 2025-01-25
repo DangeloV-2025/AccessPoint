@@ -1,0 +1,4 @@
+title: My Values
+author: Seth Robles
+date: January 25, 2025
+slug: my-values

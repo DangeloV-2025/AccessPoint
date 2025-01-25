@@ -1,0 +1,4 @@
+title: Looking Back
+author: Seth Robles
+date: January 25, 2025
+slug: looking-back
