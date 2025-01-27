@@ -2,7 +2,7 @@
 from flask import Blueprint, render_template, abort
 import csv
 from Access_point.supabase_client import supabase
-from datetime import datetime 
+from datetime import datetime
 
 
 resource_bp = Blueprint("resource", __name__)
@@ -13,11 +13,13 @@ def scholarships():
     """Fetch and display scholarships from Supabase."""
     try:
         # Fetch data from Supabase
-        response = supabase.table("scholarships").select("*").execute()
-        scholarships = response.data  # This contains the fetched rows
-        
+        # response = supabase.table("scholarships").select("*").execute()
+        # scholarships = response.data  # This contains the fetched rows
+        scholarships = populate_from_csv('Access_point/assets/csv/scholarships.csv')
+        print(scholarships)
+
         # Uncomment for debugging
-        # print(f"Fetched scholarships data: {scholarships}") 
+        # print(f"Fetched scholarships data: {scholarships}")
 
         # Default to an empty list if no data
         if not scholarships:
@@ -47,7 +49,7 @@ def scholarships():
         print("Error accessing HTML")
         abort(404)
 
-    
+
 @resource_bp.route("/resources/fly_ins")
 def fly_ins():
     """Fetch and display fly-ins from Supabase."""
@@ -59,7 +61,7 @@ def fly_ins():
         fly_ins = response.data
 
         # Uncomment for debugging
-        # print(f"Fetched fly_ins data: {fly_ins}") 
+        # print(f"Fetched fly_ins data: {fly_ins}")
 
         # Default to an empty list if no data is found
         if not fly_ins:
@@ -109,7 +111,7 @@ def load_scholarships():
 def pre_college():
     """Fetch and display pre_college from Supabase."""
     print("Route was hit!")  # Debugging
-    
+
     try:
         # Fetch data from Supabase
         response = supabase.table("pre_college").select("*").execute()
@@ -143,3 +145,28 @@ def resources(page):
         return render_template(f"resources/{page}.html")
     except:
         abort(404)
+
+
+
+
+def populate_from_csv(link):
+    try:
+        with open(link, newline='', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            scholarships = [
+                {
+                    'name': row['name'],
+                    'amount': row['amount'],
+                    'deadline': row['deadline'],
+                    'description': row['description'],
+                    'apply_link': row['apply_link']
+                }
+                for row in reader
+            ]
+            return scholarships
+    except FileNotFoundError:
+        print("Error: The file 'scholarships.csv' was not found.")
+    except csv.Error as e:
+        print(f"Error processing CSV file: {e}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")

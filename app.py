@@ -1,6 +1,6 @@
-from flask import (Flask, render_template, 
-                   request, redirect, 
-                   session, url_for, 
+from flask import (Flask, render_template,
+                   request, redirect,
+                   session, url_for,
                    flash, send_from_directory,
                    abort
 )
@@ -59,7 +59,7 @@ def load_blog_post(slug):
 # Function to load scholarships from CSV
 def load_scholarships():
     scholarships = []
-    with open('resource_content/Scholarships_PlaceHolder - Sheet2.csv', newline='', encoding='utf-8') as csvfile:
+    with open('Access_point/assets/csv/scholarships.csv', newline='', encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             scholarships.append(row)
@@ -77,21 +77,29 @@ def load_scholarships():
 
 #TODO: Make this method open for all of them
 # Populate the database from a CSV file
+
 def populate_from_csv():
-    if Scholarship.query.count() == 0:  # Avoid duplicates
-        with open('scholarships.csv', newline='', encoding='utf-8') as csvfile:
+    try:
+        with open('Access_point/assets/csv/scholarships.csv', newline='', encoding='utf-8') as csvfile:
             reader = csv.DictReader(csvfile)
             scholarships = [
-                Scholarship(
-                    name=row['name'],
-                    amount=row['amount'],
-                    deadline=row['deadline'],
-                    description=row['description'],
-                    apply_link=row['apply_link']
-                ) for row in reader
+                {
+                    'name': row['name'],
+                    'amount': row['amount'],
+                    'deadline': row['deadline'],
+                    'description': row['description'],
+                    'apply_link': row['apply_link']
+                }
+                for row in reader
             ]
-            db.session.add_all(scholarships)
-            db.session.commit()
+            return scholarships
+    except FileNotFoundError:
+        print("Error: The file 'scholarships.csv' was not found.")
+    except csv.Error as e:
+        print(f"Error processing CSV file: {e}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
 
 # Initialize the database
 with app.app_context():
@@ -133,11 +141,11 @@ def login():
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
-        
+
         try:
             # Attempt to log in
             response = supabase.auth.sign_in_with_password({"email": email, "password": password})
-            
+
             # If successful, redirect to dashboard
             if response.get("user"):
                 session["user"] = response["user"]
@@ -197,7 +205,7 @@ def contact():
 
 @app.route("/resources/scholarships")
 def scholarships():
-    scholarships = load_scholarships()  # Load data from CSV
+    scholarships = populate_from_csv()  # Load data from CSV
     return render_template("resources/scholarships.html", scholarships=scholarships)
 
 @app.route("/resources/pre_college")

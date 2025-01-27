@@ -1,5 +1,7 @@
 # my_app/blog_utils.py
 import os
+import markdown ## Used to help with links
+
 
 BLOG_POSTS_DIR = "Access_point/blog_posts"
 
@@ -40,7 +42,11 @@ def load_blog_post(slug):
     with open(content_file, "r", encoding="utf-8") as f:
         content = f.read()
 
+    # Parse Markdown content into HTML - for links
+    content_html = markdown.markdown(content)
+
+
     # Combine metadata and content
-    metadata["content"] = content
+    metadata["content"] = content_html
     metadata["slug"] = slug  # Add slug to metadata for linking purposes
     return metadata
