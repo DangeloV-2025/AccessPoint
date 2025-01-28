@@ -92,11 +92,11 @@
   <!-- Pre-College Program Boxes -->
   <div class="container mt-5">
     <div class="row g-4" id="preCollegeContainer">
-      {% for program in pre_college_programs %}
+      {% for program in pre_college %}
       <div class="col-md-6 col-lg-4">
         <div class="pre_college-box" data-bs-toggle="modal" data-bs-target="#programModal{{ program.id }}">
           <h3>{{ program.program_name }}</h3>
-          <p><strong>Host:</strong> {{ program.host_institution }}</p>
+          <p><strong>Organization:</strong> {{ program.host_organization }}</p>
           <p><strong>Deadline:</strong> {{ program.deadline }}</p>
           <p><strong>Grade Eligibility:</strong> {{ program.grade_eligibility }}</p>
         </div>

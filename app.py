@@ -211,7 +211,7 @@ def scholarships():
 @app.route("/resources/pre_college")
 def Pre_college():
     scholarships = load_scholarships()  # Load data from CSV
-    return render_template("resources/pre_colelege.html", scholarships=scholarships)
+    return render_template("resources/pre_college.html", scholarships=scholarships)
 
 
 @app.route("/resources/<page>")
