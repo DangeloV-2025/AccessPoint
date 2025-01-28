@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fly-Ins - AccessPoint</title>
+  <link rel="icon" type="image/png" href="/assets/img/mascot.png">
+
+
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
@@ -94,7 +97,7 @@
         {% for fly_in in fly_ins %}
         <div class="col-md-6 col-lg-4">
             <div class="fly_ins-box {% if fly_in.is_expired %}gray-out{% endif %}"
-                 data-bs-toggle="modal" 
+                 data-bs-toggle="modal"
                  data-bs-target="#flyInsModal{{ loop.index }}">
                 <h3>{{ fly_in.program }}</h3>
                 <p><strong>Host:</strong> {{ fly_in.host_institution }}</p>
